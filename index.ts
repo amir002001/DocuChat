@@ -4,21 +4,23 @@ import { resolve } from 'path';
 dotenv.config()
 import { get_pinecone_client } from "./client"
 
-async function* getFiles(dir: string): AsyncGenerator<string, boolean, unknown> {
+async function* getFiles(dir: string): AsyncGenerator<{ file_name: string, file_path: string }, boolean, unknown> {
     const dirents = await readdir(dir, { withFileTypes: true });
     for (const dirent of dirents) {
         const res = resolve(dir, dirent.name);
         if (dirent.isDirectory()) {
             yield* getFiles(res);
         } else {
-            yield res;
+            yield { file_name: dirent.name, file_path: res };
         }
     }
     return true
 }
 const process_docs = async ({ doc_path, ignore }: { doc_path: string, ignore: string[] }) => {
+    const ignore_set = new Set(ignore)
     for await (const file of getFiles("./docs")) {
-        console.log(file)
+        if (!ignore_set.has(file.file_name))
+            console.log(file)
     }
 }
 
@@ -33,7 +35,7 @@ const main = async () => {
         console.log("index exists")
     }
     process_docs({
-        doc_path: "docs", ignore: ["README.md", "index.md", "changelog.md"]
+        doc_path: "docs", ignore: ["index.md", "changelog.md"]
     })
 }
 
