@@ -1,22 +1,25 @@
 {
-  "name": "tdchallenge",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
-  },
-  "devDependencies": {
-    "@types/node": "^18.14.1"
-  }
+    "name": "tdchallenge",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "populate": "ts-node index.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@pinecone-database/pinecone": "^0.0.8",
+        "dotenv": "^16.0.3",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.9.5"
+    },
+    "devDependencies": {
+        "@tsconfig/node16": "^1.0.3",
+        "@types/node": "^18.14.1"
+    }
 }
