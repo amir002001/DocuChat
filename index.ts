@@ -25,14 +25,17 @@ const embed_text = async (text: string) => {
     const vector = await co.embed({ model: "large", texts: [text] })
     return vector.body.embeddings[0]
 }
-const embed = async (file_path: string): Promise<number[]> => {
+const embed_file = async (file_path: string): Promise<number[]> => {
     const file_content = readFileSync(file_path, { encoding: 'utf8', flag: 'r' })
+    console.log("getting file summary")
     const summary = await summarize_text(file_content)
+    console.log("getting vector")
     const vector = await embed_text(summary)
     return vector
 }
 
-const check_if_id_exists = async (id: string): Promise<boolean> => {
+const check_if_id_not_upserted = async (id: string): Promise<boolean> => {
+    console.log("checking if ID already upserted")
     const index = pinecone?.Index("docs")
     if (!index) return false
     const res = await index.fetch({ ids: [id] })
@@ -40,13 +43,26 @@ const check_if_id_exists = async (id: string): Promise<boolean> => {
     return vector == undefined
 }
 
+const upsert_vector = async ({ id, vector }: { id: string, vector: number[] }): Promise<boolean> => {
+    console.log(`upserting vector: ${id}`)
+    if (!pinecone)
+        return false
+    const index = pinecone.Index("docs")
+    if (!index) return false
+    await index.upsert({ upsertRequest: { vectors: [{ id: id, values: vector }] } })
+    return true
+}
+
 const process_docs = async ({ doc_path, ignore }: { doc_path: string, ignore: string[] }) => {
     const ignore_set = new Set(ignore)
     for await (const file of getFiles("./docs")) {
         if (!ignore_set.has(file.file_name)) {
             const relative_path = relative(file.file_path, __dirname)
-            if (await check_if_id_exists(relative_path))
-                embed(file.file_path)
+            if (await check_if_id_not_upserted(relative_path)) {
+                console.log("id not upserted")
+                const vector = await embed_file(file.file_path)
+                await upsert_vector({ id: file.file_name, vector: vector })
+            }
         }
     }
 }
