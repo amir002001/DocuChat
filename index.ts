@@ -31,7 +31,7 @@ const main = async () => {
             if (dirent.isDirectory()) {
                 yield* getFiles(res);
             } else {
-                const relative_path = relative(__dirname, res);
+                const relative_path = relative(resolve(__dirname, doc_path), res);
                 yield {
                     file_name: dirent.name,
                     file_path: res,
@@ -49,8 +49,11 @@ const main = async () => {
         });
         console.log("getting file summary");
         const summary = await summarize_text(file_content, cohere_client);
+        console.log(summary);
         console.log("getting vector");
         const vector = await embed_text(summary, cohere_client);
+        console.log(vector)
+        if (summary === undefined || vector === undefined || vector.length === 0) throw new Error("cohere moment")
         return vector;
     };
 
@@ -68,7 +71,14 @@ const main = async () => {
                 if (await check_has_id_been_upserted(file.relative_path, index)) {
                     console.log(`id ${file.relative_path} exists`);
                 } else {
-                    const vector = await embed_file(file.file_path);
+                    let vector = null
+                    try {
+                        vector = await embed_file(file.file_path);
+                    } catch (e: unknown) {
+                        if (e instanceof Error) console.error(e.message)
+                        continue
+                    }
+                    if (!vector) continue
                     await upsert_vector(
                         {
                             id: file.relative_path,
@@ -77,6 +87,7 @@ const main = async () => {
                         },
                     );
                     console.log(`upserting id ${file.relative_path}`);
+                    await new Promise(r => setTimeout(r, 7000));
                 }
             }
         }
@@ -89,11 +100,18 @@ const main = async () => {
         console.log("index exists");
     else {
         console.log("index does not exist. creating index");
-        create_index(doc_path, pinecone_client);
+        await create_index(doc_path, pinecone_client);
+        process.exit()
     }
+    //    while (!(await check_is_index_ready(doc_path, pinecone_client))) {
+    //        console.log("index is not ready")
+    //        await new Promise(r => setTimeout(r, 1000))
+    //    }
+    //    endpoint doesn't work for now not my fault
+    //    check via console and run again
     process_docs({
-        doc_path: "docs",
-        ignore: ["index.md", "changelog.md"],
+        doc_path: doc_path,
+        ignore: ["index.md", "changelog.md", ".DS_Store"],
     });
 };
 

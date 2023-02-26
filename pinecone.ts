@@ -1,5 +1,5 @@
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch";
+import { IndexMetaDatabaseStatusStateEnum, VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch";
 
 export const init_pinecone_client = async () => {
     const pinecone = new PineconeClient();
@@ -59,11 +59,19 @@ export const check_does_index_exist = async (
     return indexes.includes(index_name);
 };
 
+export const check_is_index_ready = async (index_name: string, pinecone: PineconeClient): Promise<boolean> => {
+    const index_info = await pinecone.describeIndex({ indexName: index_name })
+    console.log(index_info.database)
+    if (index_info?.database?.status === undefined) return false
+    console.log(index_info.database.status)
+    return index_info.database.status.state === IndexMetaDatabaseStatusStateEnum.Ready
+}
+
 export const create_index = async (
     index_name: string,
     pinecone: PineconeClient,
 ): Promise<void> => {
-    pinecone.createIndex({
+    await pinecone.createIndex({
         createRequest: {
             name: index_name,
             podType: "s1",
