@@ -1,0 +1,11 @@
+{
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "nursery": {
+                "recommended": true,
+                "useConst": "warn"
+            }
+        }
+    }
+}
