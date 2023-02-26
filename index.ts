@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import { readFileSync } from 'fs';
 import { readdir } from 'fs/promises';
-import { relative, resolve } from 'path';
+import { basename, relative, resolve } from 'path';
 dotenv.config()
 import { init_pinecone_client, co, pinecone } from "./clients"
 
@@ -17,14 +17,19 @@ async function* getFiles(dir: string): AsyncGenerator<{ file_name: string, file_
     }
     return true
 }
-const summarize_text = (text: string) => {
-    co.summarize({ text: text, length: 'long', format: 'bullets' })
+const summarize_text = async (text: string) => {
+    const summary = await co.summarize({ text: text, length: 'long', format: 'bullets' })
+    return summary.body.summary
 }
-
-const vectorize_file = (file_path: string): number[] => {
+const embed_text = async (text: string) => {
+    const vector = await co.embed({ model: "large", texts: [text] })
+    return vector.body.embeddings[0]
+}
+const embed = async (file_path: string): Promise<number[]> => {
     const file_content = readFileSync(file_path, { encoding: 'utf8', flag: 'r' })
-    console.log(file_content)
-    return []
+    const summary = await summarize_text(file_content)
+    const vector = await embed_text(summary)
+    return vector
 }
 
 const check_if_id_exists = async (id: string): Promise<boolean> => {
@@ -41,7 +46,7 @@ const process_docs = async ({ doc_path, ignore }: { doc_path: string, ignore: st
         if (!ignore_set.has(file.file_name)) {
             const relative_path = relative(file.file_path, __dirname)
             if (await check_if_id_exists(relative_path))
-                vectorize_file(file.file_path)
+                embed(file.file_path)
         }
     }
 }
