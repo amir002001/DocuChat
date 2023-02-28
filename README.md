@@ -1,5 +1,5 @@
 
-# CAPTIV8
+# DocuChat
 A chat interface that helps developers find relevant Github documentation based on their natural language queries. We've built a database of vector embeddings from Github documentation summaries, and our chat interface uses cosine similarity to retrieve the most similar documents to a given query. Our goal is to help developers quickly and easily find the information they need from the vast amount of documentation available on Github. We hope our project will be a useful tool for developers everywhere.
 
 ## Tech Stack
