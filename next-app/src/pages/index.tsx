@@ -48,7 +48,6 @@ export default function Home() {
         <title>DocuChat</title>
         <meta name="description" content="Contextual GitHub Docs Search" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Fragment>
         <Image
