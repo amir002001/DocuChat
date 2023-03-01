@@ -2,7 +2,7 @@ import { GitHubSvg } from "@/components/github-svg";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import classnames from "classnames";
 import { SendIcon } from "@/components/send-icon";
 import { ExternalSvg } from "@/components/external-svg";
@@ -34,6 +34,14 @@ export default function Home() {
   ) => {
     set_search_query(event.target.value!);
   };
+  const handle_search_key_down = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      button_ref.current?.click();
+    }
+  };
+  const button_ref = useRef<HTMLButtonElement | null>(null);
   return (
     <>
       <Head>
@@ -78,12 +86,17 @@ export default function Home() {
                     <input
                       value={search_query}
                       onChange={handle_search_query_change}
+                      onKeyDown={handle_search_key_down}
                       type="text"
                       className={classnames(
                         "bg-gray-200 w-full transition-all duration-300 outline-none "
                       )}
                     />
-                    <button disabled={isLoading} onClick={handle_search}>
+                    <button
+                      ref={button_ref}
+                      disabled={isLoading}
+                      onClick={handle_search}
+                    >
                       <SendIcon className="w-6" />
                     </button>
                   </motion.div>
