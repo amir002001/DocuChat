@@ -6,7 +6,7 @@ type Source = {
   name: string;
 };
 
-type ChatResult = {
+export type ChatResult = {
   response: string;
   sources: Source[];
 };
@@ -27,15 +27,22 @@ export default async function handler(
     const pinecone_result = await pinecone.Index("docs").query({
       queryRequest: { vector: cohere_response.body.embeddings[0], topK: 3 },
     });
-    const sources = pinecone_result.matches?.map((match): Source => {
-      return { url: match.id, name: "" };
-    });
-    if (!sources) return;
-    const stop_yelling: ChatResult = {
-      response: "",
-      sources: sources,
-    };
-    res.status(200).json(stop_yelling);
+    if (!pinecone_result.matches) {
+      res.status(400).end();
+      return;
+    }
+    let sources: Source[] = [];
+    const base = "https://raw.githubusercontent.com/github/docs/main/content/";
+    for (const match of pinecone_result.matches) {
+      const url = base + match.id;
+      const name = match.id
+        .split("/")
+        .at(-1)
+        ?.replace(".md", "")
+        .replace("-", " ");
+      sources.push({ url: url, name: name ?? "doc name" });
+    }
+    res.status(200).json({ response: "", sources: sources });
   } else {
     res.status(404).end();
   }
