@@ -61,7 +61,7 @@ export default function Home() {
             <div
               className={classnames(
                 "flex flex-col justify-center items-center",
-                started ? "w-2/3 " : ""
+                started ? "w-full" : ""
               )}
             >
               {started ? (
@@ -86,19 +86,6 @@ export default function Home() {
                       <SendIcon className="w-6" />
                     </button>
                   </motion.div>
-                  {data !== undefined ? (
-                    <div>
-                      <p>{data.response}</p>
-                      {data.sources.map((source) => (
-                        <div key={source.url} className="flex gap-1">
-                          <a href={source.url}>{source.url}</a>
-                          <ExternalSvg className="w-5" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <></>
-                  )}
                 </>
               ) : (
                 <button
@@ -111,6 +98,24 @@ export default function Home() {
                 </button>
               )}
             </div>
+            {data !== undefined ? (
+              <motion.div className="w-full bg-gray-200 rounded-xl p-4">
+                <p>{data.response}</p>
+                {data.sources.map((source) => (
+                  <a
+                    key={source.url}
+                    target="_blank"
+                    className="funderline text-blue-600 flex gap-1"
+                    href={source.url}
+                  >
+                    {source.name}
+                    <ExternalSvg className="w-5" />
+                  </a>
+                ))}
+              </motion.div>
+            ) : (
+              <></>
+            )}
           </div>
         </main>
       </Fragment>

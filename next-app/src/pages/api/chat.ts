@@ -32,14 +32,16 @@ export default async function handler(
       return;
     }
     let sources: Source[] = [];
-    const base = "https://raw.githubusercontent.com/github/docs/main/content/";
+    const raw_base =
+      "https://raw.githubusercontent.com/github/docs/main/content/";
+    const doc_base = "https://github.com/github/docs/blob/main/content/";
     for (const match of pinecone_result.matches) {
-      const url = base + match.id;
+      const url = doc_base + match.id;
       const name = match.id
         .split("/")
         .at(-1)
         ?.replace(".md", "")
-        .replace("-", " ");
+        .replace(/-/g, " ");
       sources.push({ url: url, name: name ?? "doc name" });
     }
     res.status(200).json({ response: "", sources: sources });
