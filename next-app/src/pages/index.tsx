@@ -44,6 +44,7 @@ export default function Home() {
       </Head>
       <Fragment>
         <Image
+          priority
           fill
           className="object-cover -z-10 absolute"
           alt=""
