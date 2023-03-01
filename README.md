@@ -1,7 +1,7 @@
 # DocuChat
 
-* Figma: https://www.figma.com/file/NtnDH1izHCYzvBjVWNN9wR/DocuChat?node-id=1202%3A1041
-* Link: https://docuchat.amir.day/
+* [Figma](https://www.figma.com/file/NtnDH1izHCYzvBjVWNN9wR/DocuChat?node-id=1202%3A1041)
+* [Link](https://docuchat.amir.day/)
 
 ## **💡 Inspiration 💡**
 
