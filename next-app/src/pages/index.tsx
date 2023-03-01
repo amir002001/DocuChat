@@ -11,11 +11,11 @@ import { ChatResult } from './api/chat'
 
 export default function Home() {
     const queryFn = async (): Promise<ChatResult> => {
-        const search_result = await fetch('/api/chat', {
+        const search_result = (await fetch('/api/chat', {
             body: JSON.stringify({ query: search_query }),
             method: 'POST',
             headers: { 'content-type': 'application/json' },
-        }).then((res) => res.json())
+        }).then((res) => res.json())) as ChatResult
 
         return search_result
     }
