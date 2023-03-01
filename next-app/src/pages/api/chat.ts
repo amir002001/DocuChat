@@ -46,7 +46,7 @@ export default async function handler(
             return
         }
         const decent_matches = pinecone_result.matches.filter(
-            (match) => (match.score ?? 0) > 0.5
+            (match) => (match.score ?? 0) > 0.1
         )
         const sources: Source[] = []
 
