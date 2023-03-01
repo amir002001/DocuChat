@@ -55,7 +55,9 @@ export default function Home() {
           fill
           className="object-cover -z-10 absolute"
           alt=""
-          src={"/background.png"}
+          src={
+            "https://res.cloudinary.com/df3h8ffly/image/upload/q_auto:eco/v1677695515/image_rfa338.webp"
+          }
         ></Image>
         <main className="2xl:container transition-all duration-300 mx-auto relative flex justify-center h-screen items-center">
           <a
