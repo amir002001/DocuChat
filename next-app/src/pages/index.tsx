@@ -59,20 +59,20 @@ export default function Home() {
                 <Image
                     priority
                     fill
-                    className="object-cover -z-10 absolute"
+                    className="object-cover absolute -z-10"
                     alt=""
                     src={
                         'https://res.cloudinary.com/df3h8ffly/image/upload/q_auto:eco/v1677695515/image_rfa338.webp'
                     }
                 ></Image>
-                <main className="2xl:container transition-all duration-300 mx-auto relative flex justify-center h-screen items-center">
+                <main className="flex relative justify-center items-center mx-auto h-screen transition-all duration-300 2xl:container">
                     <a
                         href="https://github.com/amir002001/DocuChat"
-                        className="absolute right-6 top-6 rounded-full bg-gray-800 text-gray-100 px-4 py-2 shadow-md"
+                        className="absolute top-6 right-6 py-2 px-4 text-gray-100 bg-gray-800 rounded-full shadow-md"
                     >
                         view source
                     </a>
-                    <div className="flex flex-col max-w-[640px] items-center justify-center gap-9 w-full">
+                    <div className="flex flex-col gap-9 justify-center items-center w-full max-w-[640px]">
                         <GitHubSvg className="w-24" />
                         <div
                             className={classnames(
@@ -152,8 +152,8 @@ export default function Home() {
                             )}
                         </div>
                         {data !== undefined ? (
-                            <motion.div className="w-full bg-gray-200 rounded-xl p-4">
-                                <p className="text-lg mb-2">
+                            <motion.div className="p-4 w-full bg-gray-200 rounded-xl">
+                                <p className="mb-2 text-lg">
                                     This is what I found based on the context of
                                     your question:
                                 </p>
@@ -161,7 +161,7 @@ export default function Home() {
                                     <a
                                         key={source.url}
                                         target="_blank"
-                                        className="funderline text-blue-600 flex gap-1"
+                                        className="flex gap-1 text-blue-600 funderline"
                                         href={source.url}
                                     >
                                         {source.name}
